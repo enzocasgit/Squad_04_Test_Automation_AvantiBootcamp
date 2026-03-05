@@ -96,5 +96,4 @@ describe('Carrinho de Compras', () => {
     cy.viewCart();
     cy.removeItemFromCart("Breathe-Easy Tank");
     cy.validateItemisRemoved("Breathe-Easy Tank");
-  });
 });
