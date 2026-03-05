@@ -53,3 +53,47 @@ describe('Carrinho de Compras', () => {
     cy.get('.NotificationList', {timeout: 60000}).should('be.visible').and('contain', 'missing');
   });
 })
+  it("Adicionar dois items difetentes ao carrinho", () => {
+    cy.intercept("POST", "**/graphql**").as("gqlRequest");
+
+    cy.visitPage("https://luma-demo.scandipwa.com/");
+    cy.searchItem("Breathe-Easy Tank");
+    cy.selectColor("Purple");
+    cy.selectSize("S");
+    cy.addToCart();
+    cy.wait("@gqlRequest");
+    cy.validadeCartAction("added to cart");
+
+    cy.visitPage("https://luma-demo.scandipwa.com/");
+    cy.searchItem("Radiant Tee");
+    cy.selectColor("Blue");
+    cy.selectSize("M");
+    cy.addToCart();
+    cy.wait("@gqlRequest");
+    cy.validadeCartAction("added to cart");
+  });
+
+  it("Remover item do carrinho", () => {
+    cy.intercept("POST", "**/graphql**").as("gqlRequest");
+
+    cy.visitPage("https://luma-demo.scandipwa.com/");
+    cy.searchItem("Breathe-Easy Tank");
+    cy.selectColor("Purple");
+    cy.selectSize("S");
+    cy.addToCart();
+    cy.wait("@gqlRequest");
+    cy.validadeCartAction("added to cart");
+
+    cy.visitPage("https://luma-demo.scandipwa.com/");
+    cy.searchItem("Radiant Tee");
+    cy.selectColor("Blue");
+    cy.selectSize("M");
+    cy.addToCart();
+    cy.wait("@gqlRequest");
+    cy.validadeCartAction("added to cart");
+
+    cy.VisitCart();
+    cy.viewCart();
+    cy.removeItemFromCart("Breathe-Easy Tank");
+    cy.validateItemisRemoved("Breathe-Easy Tank");
+});
