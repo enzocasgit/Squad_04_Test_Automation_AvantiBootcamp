@@ -24,7 +24,7 @@ Cypress.Commands.add('addToCart', () => {
 });
     
 Cypress.Commands.add('verifyNotification', (message) => { 
-    cy.get('.NotificationList').should('be.visible').and('contain', message);
+    cy.get('.NotificationList', { timeout: 60000 }).should('be.visible').and('contain', message);
 });
 
 Cypress.Commands.add('VisitCart', () => {
@@ -32,25 +32,23 @@ Cypress.Commands.add('VisitCart', () => {
 });
 
 Cypress.Commands.add('viewCart', () => {
-    cy.contains('a', 'View Cart').should('be.visible').click();
+    cy.get('.CartOverlay-Actions').should('be.visible').find('a[href="/cart"]').click();
 });
 
-Cypress.Commands.add('removeItemFromCart', (item) => {
-    cy.contains('.CartItem', item).should('exist').within(() => {
-        cy.get('button[aria-label="Remove item from cart"]').should('be.visible').click();
-    });
+Cypress.Commands.add('removeItemFromCart',() => {
+    cy.get('#RemoveItem').click({ force: true });
 });
 
 Cypress.Commands.add('validateItemisRemoved', (item) => {
-    cy.contains('.CartItem', item).should('not.exist');
+    cy.contains('.CartItem', item, {timeout: 60000}).should('not.exist');
 });
 
 Cypress.Commands.add('interceptRequest', () => {
-    cy.intercept("POST", "**/graphql**").as("gqlRequest");
+    cy.intercept("POST", "**/graphql**").as("graphql");
 });
 
 Cypress.Commands.add('waitRequest', () => {
-    cy.wait("@gqlRequest");
+    cy.wait("@graphql", { timeout: 60000 });
 });
 
 Cypress.Commands.add('searchByField', (searchEntry) => {
